@@ -43,4 +43,10 @@ Route::middleware('auth:sanctum')->get('logout', [AuthController::class, 'logout
 Route::controller(ComplaintsController::class)->group(function(){
     Route::post('addComplaint' , 'addComplaint')
     ->name('user.add.complaint');
+
+    Route::get('viewMyComplaints' , 'viewMyComplaints')
+    ->name('user.view.Complaints');
+
+    Route::get('viewComplaintDetails/{complaintId}' , 'viewComplaintDetails')
+    ->name('user.view.Complaint.details');
 });

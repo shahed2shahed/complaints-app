@@ -35,4 +35,32 @@ class ComplaintsController extends Controller
         }
     }
 
+    // show my complaints
+    public function viewMyComplaints(): JsonResponse{
+        $data = [] ;
+        try{
+            $data = $this->complaintService->viewMyComplaints();
+           return Response::Success($data['complaints'], $data['message']);
+        }
+        catch(Throwable $th){
+            $message = $th->getMessage();
+            $errors [] = $message;
+            return Response::Error($data , $message , $errors);
+        }
+    }
+
+    // show complaint details
+    public function viewComplaintDetails($complaintId): JsonResponse{
+        $data = [] ;
+        try{
+            $data = $this->complaintService->viewComplaintDetails($complaintId);
+           return Response::Success($data['complaint'], $data['message']);
+        }
+        catch(Throwable $th){
+            $message = $th->getMessage();
+            $errors [] = $message;
+            return Response::Error($data , $message , $errors);
+        }
+    }
+
 }

@@ -6,37 +6,24 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Complaint;
 use App\Models\ComplaintAttachment;
-
-
-
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Session;
-use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use App\Http\Responses\Response;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Http\JsonResponse;
-use App\Models\ResetCodePassword;
-use App\Mail\SendCodeResetPassword;
-use Illuminate\Support\Facades\Mail;
 use Throwable;
+use Exception;
 use Storage;
 use Illuminate\Support\Facades\File;
 
 
 class ComplaintService
 {
+        // add new complaint
         public function addComplaint($request): array{
 
             $user = Auth::user();
 
             $newComplaint = Complaint::create([
                 'complaint_type_id' => $request['complaint_type_id'],
-                'user_id' => 1 ,//$user->id,
+                'user_id' => $user->id,
                 'complaint_department_id' => $request['complaint_department_id'],
                 'complaint_status_id' => 1,
                 'problem_description' => $request['problem_description'],
@@ -58,7 +45,56 @@ class ComplaintService
 
             }
 
-            $message = 'new complaint created succesfully';
-            return ['complaint' => [$newComplaint , $files] , 'message' => $message];
+            $all = ['complaint' => $newComplaint , 'attachments' => $files];
+
+             $message = 'new complaint created succesfully';
+             return ['complaint' => $all , 'message' => $message];
+        }
+
+        // show my complaints
+        public function viewMyComplaints(): array{
+            $user = Auth::user();
+            $complaints =  Complaint::with('complaintType' , 'complaintDepartment' , 'complaintStatus')->where('user_id' , $user->id)->get();
+
+            $complaint_det = [];
+
+            foreach ($complaints as $complaint) {
+                $complaint_det [] = [
+                    'complaint_type' => ['id' => $complaint->complaintType['id'] , 'type' => $complaint->complaintType['type']],
+                    'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
+                    'location' => $complaint['location'],
+                    'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
+                ]; 
+            }
+
+             $message = 'your complaints are retrived succesfully';
+             return ['complaints' => $complaint_det , 'message' => $message];
+        }
+
+        // show complaint details
+        public function viewComplaintDetails($complaintId): array{
+            $user = Auth::user();
+            $complaint =  Complaint::with('complaintType' , 'complaintDepartment' , 'complaintStatus' , 'complaintAttachments')->find($complaintId);
+
+            $attachments = [] ;
+
+                foreach ($complaint->complaintAttachments as $complaintAttachment) {
+                    $attachments [] = [
+                        'id' => $complaintAttachment->id , 
+                        'attachment' => url(Storage::url($complaintAttachment->attachment))
+                    ];
+                }
+
+                $complaint_det = [
+                    'complaint_type' => ['id' => $complaint->complaintType['id'] , 'type' => $complaint->complaintType['type']],
+                    'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
+                    'location' => $complaint['location'],
+                    'problem_description' => $complaint['problem_description'],
+                    'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
+                    'attachments' => $attachments
+                ]; 
+
+             $message = 'complaint details are retrived succesfully';
+             return ['complaint' => $complaint_det , 'message' => $message];
         }
 }
