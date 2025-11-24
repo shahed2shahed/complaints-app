@@ -79,5 +79,10 @@ Route::middleware('auth:sanctum')->controller(ComplaintsWebController::class)->g
     Route::post('addNotesAboutComplaint/{complaintId}' , 'addNotesAboutComplaint')
     ->name('employee.add.notes.about.complaint')    
     ->middleware('can:addNotesAboutComplaint');
+
+    Route::post('requestAdditionalInfo/{complaintId}' , 'requestAdditionalInfo')
+    ->name('employee.request.additional.info.about.complaint')    
+    ->middleware('can:requestAdditionalInfo');
+    
     
 });

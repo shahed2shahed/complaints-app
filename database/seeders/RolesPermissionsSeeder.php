@@ -28,7 +28,7 @@ class RolesPermissionsSeeder extends Seeder
                         'userForgotPassword' , 'userCheckCode' , 'userResetPassword',
                         'logout' , 'addComplaint' , 'viewMyComplaints' , 'viewComplaintDetails' ,
                         'viewComplaintsEmployeeDepartmemt' , 'viewComplaintDetailsEmployeeDepartmemt' , 'editComplaintStatus' ,
-                        'addNotesAboutComplaint'];
+                        'addNotesAboutComplaint' , 'requestAdditionalInfo'];
 
         foreach ($permissions as $permissionName) {
             Permission::findOrCreate($permissionName, 'web');
@@ -40,7 +40,7 @@ class RolesPermissionsSeeder extends Seeder
         $AdminRole->syncPermissions([$permissions]);
         $ClientRole->syncPermissions(['addComplaint' , 'viewMyComplaints' , 'viewComplaintDetails']);
         $EmployeeRole->syncPermissions(['viewComplaintsEmployeeDepartmemt' , 'viewComplaintDetailsEmployeeDepartmemt' ,
-                                        'editComplaintStatus' , 'addNotesAboutComplaint' ]);
+                                        'editComplaintStatus' , 'addNotesAboutComplaint' , 'requestAdditionalInfo']);
 
 
 $sourcePath = public_path('uploads/seeder_photos/defualtProfilePhoto.png');

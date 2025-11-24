@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Complaint;
+use App\Models\AdditionalInfo;
 use App\Models\Employee;
 use App\Models\Note;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -91,4 +92,27 @@ class ComplaintWebService
             $message = 'note for complaint are added succesfully';
              return ['note' => $note , 'message' => $message];
         }
+
+        //additional information 
+        public function requestAdditionalInfo($request, $complaintId): array{
+
+        $complaint = Complaint::find($complaintId);
+
+        if (!$complaint) {
+            throw new Exception("Complaint not found", 404);
+        }
+
+        $user = Auth::user();
+        $employeeId = Employee::where('user_id', $user->id)->value('id');
+
+        $infoRequest = AdditionalInfo::create([
+            'complaint_id' => $complaintId,
+            'employee_id' => $employeeId,
+            'request_message' => $request['request_message'],
+        ]);
+
+            $message = 'additional information request sent successfully';
+            return [ 'info_request' => $infoRequest, 'message' => $message];
+        }
+
 }

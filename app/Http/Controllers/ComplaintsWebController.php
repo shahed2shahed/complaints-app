@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Responses\response;
 use App\Services\ComplaintWebService;
 use App\Http\Requests\Complaint\EditComplaintStatusRequest;
+use App\Http\Requests\Complaint\AdditionalInfoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -68,6 +69,19 @@ class ComplaintsWebController extends Controller
         try{
             $data = $this->complaintWebService->addNotesAboutComplaint($request , $complaintId);
            return Response::Success($data['note'], $data['message']);
+        }
+        catch(Throwable $th){
+            $message = $th->getMessage();
+            $errors [] = $message;
+            return Response::Error($data , $message , $errors);
+        }
+    }
+        //additional information 
+        public function requestAdditionalInfo(AdditionalInfoRequest $request, $complaintId): JsonResponse{
+        $data = [] ;
+        try{
+            $data = $this->complaintWebService->requestAdditionalInfo($request , $complaintId);
+           return Response::Success($data['info_request'], $data['message']);
         }
         catch(Throwable $th){
             $message = $th->getMessage();
