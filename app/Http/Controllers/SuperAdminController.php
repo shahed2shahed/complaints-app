@@ -22,46 +22,57 @@ class SuperAdminController extends Controller
         $this->complaintWebService = $complaintWebService;
     }
 
-public function getComplaintDepartment(): JsonResponse{
-    $data = [] ;
-    try{
-        $data = $this->complaintWebService->getComplaintDepartment();
-        return Response::Success($data['complaints'], $data['message']);
-    }
-    catch(Throwable $th){
+public function getComplaintDepartment(): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->getComplaintDepartment();
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
         $message = $th->getMessage();
-        $errors [] = $message;
-        return Response::Error($data , $message , $errors);
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
     }
 }
 
 
-public function viewComplaintsByDepartmemt($depId): JsonResponse{
-    $data = [] ;
-    try{
-        $data = $this->complaintWebService->getComplaintDepartment($depId);
-        return Response::Success($data['complaints'], $data['message']);
-    }
-    catch(Throwable $th){
+
+public function viewComplaintsByDepartmemt($depId): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->viewComplaintsByDepartmemt($depId);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
         $message = $th->getMessage();
-        $errors [] = $message;
-        return Response::Error($data , $message , $errors);
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
     }
 }
 
 
 public function addNewEmployee(AddNewEmployeeRequest $request): JsonResponse {
-    $data = [] ;
-    try{
-        $data = $this->complaintService->addComplaint($request);
-        return Response::Success($data['complaint'], $data['message']);
-    }
-    catch(Throwable $th){
+    $data = [];
+    try {
+        $data = $this->superAdminService->addNewEmployee( $request);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
         $message = $th->getMessage();
-        $errors [] = $message;
-        return Response::Error($data , $message , $errors);
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
     }
 }
 
+
+
+public function deleteEmployee( $id): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->addNewEmployee( $id);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
 
 }

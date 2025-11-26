@@ -149,6 +149,15 @@ return ['employee' => $employee , 'message' => $message];
 }
 
 
+public function deleteEmployee($id): array
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return [
+        'message' => 'Employee deleted successfully'
+    ];
+}
 
 
 

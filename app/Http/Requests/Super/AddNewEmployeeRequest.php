@@ -1,40 +1,59 @@
 <?php
 
-namespace App\Http\Requests\Complaint;
+namespace App\Http\Requests\Super;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Responses\response;
+use App\Http\Responses\Super\response;
 
-class AddComplaintRequest extends FormRequest
+class AddEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+            return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array
      */
     public function rules(): array
     {
+        return [
 
-
+            'gender_id' => 'required|exists:genders,id',
+            'phone' => 'required|string|unique:users,phone|regex:/^09[0-9]{8}$/',
+            'city_id' => 'required|exists:cities,id',
+            'age' => 'required|integer|min:18|max:100',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ];
     }
 
-    protected function failedValidation(Validator $validator){
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
 
-        //Throw a validationexception eith the translated error messages
         $message = "you have sent invalid data";
 
-        throw new ValidationException($validator, Response::Validation([],$message, $validator->errors()));
+        throw new ValidationException($validator, response::Validation(
+            [],
+            $message,
+            $validator->errors()
+        ));
     }
-
 }
