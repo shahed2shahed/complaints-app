@@ -120,6 +120,21 @@ Route::middleware('auth:sanctum')->controller(ComplaintsWebController::class)->g
     Route::get('viewComplaintsByDepartmemt' , 'viewComplaintsByDepartmemt')
     ->name('all.viewComplaintsByDepartmemt');
 
+  Route::post('addNewEmployee' , 'addNewEmployee')
+    ->name('all.addNewEmployee');
+
+  Route::get('getAllEmployees' , 'getAllEmployees')
+    ->name('all.getAllEmployees');
+
+  Route::get('deleteEmployee/{id}' , 'deleteEmployee')
+    ->name('all.deleteEmployee');
+
+  Route::get('getAllUsers' , 'getAllUsers')
+    ->name('all.getAllUsers');
+
+  Route::get('deleteUser/{id}' , 'deleteUser')
+    ->name('all.deleteUser');
+
 
 
 

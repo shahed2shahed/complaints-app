@@ -127,9 +127,7 @@ foreach ($complaints as $complaint) {
         return ['complaints' => $complaint_det , 'message' => $message];
 }
 
-
 public function addNewEmployee($request): array{
-
 $employee = User::factory()->create([
     'role_id' => 3,
     'gender_id' => $request['gender_id'],
@@ -145,9 +143,26 @@ $employee = User::factory()->create([
 
 $message = 'Employee added succesfully';
 return ['employee' => $employee , 'message' => $message];
-
 }
 
+
+public function getAllEmployees():array{
+    $employees = User::where('role_id' , 3)-> get();
+    foreach ($employees as $employee) {
+            $emp [] = ['id' => $employee->id  ,
+            'employee_name' => $employee->name,
+            'gender' => $employee->gender['name'],
+            'phone' => $employee->phone,
+            'city' =>  $employee->city['name'],
+            'age' => $employee->age,
+            'email' =>$employee->email,
+    ];
+
+}
+$message = 'all employees are retrived successfully';
+
+return ['employees' =>  $emp , 'message' => $message];
+}
 
 public function deleteEmployee($id): array
 {
@@ -159,6 +174,32 @@ public function deleteEmployee($id): array
     ];
 }
 
+public function getAllUsers():array{
+    $users = User::where('role_id' , 2)-> get();
+    foreach ($users as $user) {
+            $clients [] = ['id' => $user->id  ,
+            'employee_name' => $user->name,
+            'gender' => $user->gender['name'],
+            'phone' => $user->phone,
+            'city' =>  $user->city['name'],
+            'age' => $user->age,
+            'email' =>$user->email,
+    ];
 
+}
+$message = 'all user are retrived successfully';
+
+return ['user' =>  $clients , 'message' => $message];
+}
+
+public function deleteUser($id): array
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return [
+        'message' => 'User deleted successfully'
+    ];
+}
 
 }

@@ -34,8 +34,6 @@ public function getComplaintDepartment(): JsonResponse {
     }
 }
 
-
-
 public function viewComplaintsByDepartmemt($depId): JsonResponse {
     $data = [];
     try {
@@ -47,7 +45,6 @@ public function viewComplaintsByDepartmemt($depId): JsonResponse {
         return Response::Error($data, $message, $errors);
     }
 }
-
 
 public function addNewEmployee(AddNewEmployeeRequest $request): JsonResponse {
     $data = [];
@@ -61,12 +58,10 @@ public function addNewEmployee(AddNewEmployeeRequest $request): JsonResponse {
     }
 }
 
-
-
-public function deleteEmployee( $id): JsonResponse {
+public function getAllEmployees(): JsonResponse {
     $data = [];
     try {
-        $data = $this->superAdminService->addNewEmployee( $id);
+        $data = $this->superAdminService->getAllEmployees();
         return Response::Success($data, $data['message']);
     } catch (Throwable $th) {
         $message = $th->getMessage();
@@ -75,4 +70,39 @@ public function deleteEmployee( $id): JsonResponse {
     }
 }
 
+public function deleteEmployee( $id): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->deleteEmployee( $id);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
+
+public function getAllUsers(): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->getAllUsers();
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
+
+public function deleteUser( $id): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->superAdminService->deleteUser( $id);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
 }

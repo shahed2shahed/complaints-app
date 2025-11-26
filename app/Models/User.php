@@ -70,4 +70,15 @@ use HasApiTokens, HasFactory, Notifiable , HasRoles;
     public function complaints(){
         return $this->hasMany(Complaint::class);
     }
+
+
+       public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class);
+    }
 }
