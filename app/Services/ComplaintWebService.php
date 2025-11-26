@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\File;
 
 class ComplaintWebService
 {
+
+//////////////////////////////////////////////////////////////////////employee
         // show complaints for spicific employee departmemt
         public function viewComplaintsEmployeeDepartmemt(): array{
             $user = Auth::user();
@@ -31,7 +33,7 @@ class ComplaintWebService
                     'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
                     'location' => $complaint['location'],
                     'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
-                ]; 
+                ];
             }
 
              $message = 'complaints for spicific employee departmemt are retrived succesfully';
@@ -46,7 +48,7 @@ class ComplaintWebService
 
                 foreach ($complaint->complaintAttachments as $complaintAttachment) {
                     $attachments [] = [
-                        'id' => $complaintAttachment->id , 
+                        'id' => $complaintAttachment->id ,
                         'attachment' => url(Storage::url($complaintAttachment->attachment))
                     ];
                 }
@@ -58,27 +60,27 @@ class ComplaintWebService
                     'problem_description' => $complaint['problem_description'],
                     'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
                     'attachments' => $attachments
-                ]; 
+                ];
 
              $message = 'complaint details for spicific employee departmemt are retrived succesfully';
              return ['complaint' => $complaint_det , 'message' => $message];
         }
 
-        // edit complaint status 
+        // edit complaint status
         public function editComplaintStatus($request , $complaintId): array{
             $complaint =  Complaint::find($complaintId);
 
               $complaint['complaint_status_id']	= $request['complaint_status_id'];
 
              $message = 'complaint details for spicific employee departmemt are retrived succesfully';
-             return ['complaint' => $complaint , 'message' => $message];        
+             return ['complaint' => $complaint , 'message' => $message];
         }
 
-        // add notes about complaint 
+        // add notes about complaint
         public function addNotesAboutComplaint($request , $complaintId): array{
             $user = Auth::user();
             $employeeId = Employee::where('user_id' , $user->id)->value('id');
-            
+
             $request->validate(['note' => 'required']);
 
             $note = Note::create([
@@ -90,4 +92,15 @@ class ComplaintWebService
             $message = 'note for complaint are added succesfully';
              return ['note' => $note , 'message' => $message];
         }
+
+
+
+
+
+
+//////////////////////////////////////////////////////Admin
+
+
+
+
 }
