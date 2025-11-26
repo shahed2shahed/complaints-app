@@ -39,5 +39,9 @@ class Complaint extends Model
         return $this->hasMany(Note::class);
     }
 
+    public function additionalInfos() {
+        return $this->hasMany(AdditionalInfo::class);
+    }
+
 }
 
