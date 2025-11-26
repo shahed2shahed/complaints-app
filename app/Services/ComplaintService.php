@@ -15,11 +15,17 @@ use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Exception;
 use Storage;
+use App\Traits\GetComplaintDepartment;
 use Illuminate\Support\Facades\File;
 
 
 class ComplaintService
 {
+
+
+    use GetComplaintDepartment;
+
+
         // add new complaint
         public function addComplaint($request): array{
 
@@ -69,7 +75,7 @@ class ComplaintService
                     'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
                     'location' => $complaint['location'],
                     'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
-                ]; 
+                ];
             }
 
              $message = 'your complaints are retrived succesfully';
@@ -84,7 +90,7 @@ class ComplaintService
 
                 foreach ($complaint->complaintAttachments as $complaintAttachment) {
                     $attachments [] = [
-                        'id' => $complaintAttachment->id , 
+                        'id' => $complaintAttachment->id ,
                         'attachment' => url(Storage::url($complaintAttachment->attachment))
                     ];
                 }
@@ -96,31 +102,26 @@ class ComplaintService
                     'problem_description' => $complaint['problem_description'],
                     'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
                     'attachments' => $attachments
-                ]; 
+                ];
 
              $message = 'complaint details are retrived succesfully';
              return ['complaint' => $complaint_det , 'message' => $message];
         }
 
-            //3 view all cities
-    public function getComplaintDepartment():array{
-        $cities = ComplaintDepartment::all();
-        foreach ($cities as $city) {
-            $cities_name [] = ['id' => $city->id  , 'department_name' => $city->department_name];
-        }
-        $message = 'all cities are retrived successfully';
+    //3 view all departments
+    
+public function getComplaintDepartment():array{
+        return $this->getComplaintDepartment();
+}
 
-        return ['cities' =>  $cities_name , 'message' => $message];
-     }
-
-    //4 view all genders
+    //4 view all ComplaintType
     public function getComplaintType():array{
-        $gender = ComplaintType::all();
-        foreach ($gender as $gen) {
-            $gender_name [] = ['id' => $gen->id  , 'type' => $gen->type];
+        $complaintTypes = ComplaintType::all();
+        foreach ($complaintTypes as $complaintType) {
+            $types [] = ['id' => $complaintType->id  , 'type' => $complaintType->type];
         }
-        $message = 'all genders are retrived successfully';
+        $message = 'all types are retrived successfully';
 
-        return ['gender' =>  $gender_name , 'message' => $message];
+        return ['gender' =>  $types , 'message' => $message];
      }
 }

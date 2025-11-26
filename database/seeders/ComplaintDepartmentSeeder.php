@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\ComplaintDepartment;
 
-class ComplaintDepartmentSeeder extends Seeder
+class ComplaintSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,5 +18,8 @@ class ComplaintDepartmentSeeder extends Seeder
         for ($i=0; $i < 3 ; $i++) {
             ComplaintDepartment::query()->create([
            'department_name' => $status[$i] ,
-            ]); }    }
+            ]); }
+
+
+        }
 }
