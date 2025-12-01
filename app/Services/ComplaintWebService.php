@@ -202,4 +202,67 @@ public function deleteUser($id): array
     ];
 }
 
+public function lastNewUsers(): array
+{
+    $users = User::where('created_at', '>=', Carbon::now()->subDays(30))->get();
+
+    return [
+        'count' => $users,
+        'message' => 'New users in the last 30 days retrieved successfully'
+    ];
+}
+
+
+public function getUserCountsByRoleByYear(int $year): array
+{
+    $startOfYear = Carbon::createFromDate($year, 1, 1)->startOfDay();
+    $endOfYear = Carbon::createFromDate($year, 12, 31)->endOfDay();
+
+    $clientRole = Role::where('name', 'Client')->value('id');
+    $employeeRole = Role::where('name', 'Employee')->value('id');
+
+    $clientCount = User::where('role_id', $clientRole)
+        ->whereBetween('created_at', [$startOfYear, $endOfYear])
+        ->count();
+
+    $employeeCount = User::where('role_id', $employeeRole)
+        ->whereBetween('created_at', [$startOfYear, $endOfYear])
+        ->count();
+
+    $data = [
+        'client'     => $clientCount,
+        'employee'     => $employeeCount,
+        'total'      => $clientCount + $leaderCount ,
+    ];
+
+    $message = "User counts by role for year {$year} retrieved successfully";
+
+    return [
+        'data' => $data,
+        'message' => $message
+    ];
+}
+
+
+public function totalComplaintByYear(int $year): array
+{
+    $startOfYear = Carbon::createFromDate($year, 1, 1)->startOfDay();
+    $endOfYear = Carbon::createFromDate($year, 12, 31)->endOfDay();
+
+    $complaints = Complaint::whereBetween('created_at', [$startOfYear, $endOfYear])
+                    ->sum('amount');
+
+    return [
+        'complaints' => $complaints,
+        'message' => "Total complaints for year {$year} retrieved successfully"
+    ];
+}
+
+
+
+
+
+
+
+
 }
