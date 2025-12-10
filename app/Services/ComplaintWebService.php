@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Exception;
 use Storage;
+use App\Models\ComplaintDepartment;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\File;
 use App\Traits\GetComplaintDepartment;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Carbon;
 
 class ComplaintWebService
 {
@@ -46,30 +49,30 @@ public function viewComplaintsEmployeeDepartmemt(): array{
         }
 
         // show complaint details for spicific employee departmemt
-        public function viewComplaintDetailsEmployeeDepartmemt($complaintId): array{
-            $complaint =  Complaint::with('complaintType' , 'complaintDepartment' , 'complaintStatus' , 'complaintAttachments')->find($complaintId);
+public function viewComplaintDetailsEmployeeDepartmemt($complaintId): array{
+    $complaint =  Complaint::with('complaintType' , 'complaintDepartment' , 'complaintStatus' , 'complaintAttachments')->find($complaintId);
 
-            $attachments = [] ;
+    $attachments = [] ;
 
-                foreach ($complaint->complaintAttachments as $complaintAttachment) {
-                    $attachments [] = [
-                        'id' => $complaintAttachment->id ,
-                        'attachment' => url(Storage::url($complaintAttachment->attachment))
-                    ];
-                }
-
-                $complaint_det = [
-                    'complaint_type' => ['id' => $complaint->complaintType['id'] , 'type' => $complaint->complaintType['type']],
-                    'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
-                    'location' => $complaint['location'],
-                    'problem_description' => $complaint['problem_description'],
-                    'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
-                    'attachments' => $attachments
+        foreach ($complaint->complaintAttachments as $complaintAttachment) {
+            $attachments [] = [
+                'id' => $complaintAttachment->id ,
+                    'attachment' => url(Storage::url($complaintAttachment->attachment))
                 ];
+            }
 
-             $message = 'complaint details for spicific employee departmemt are retrived succesfully';
-             return ['complaint' => $complaint_det , 'message' => $message];
-        }
+    $complaint_det = [
+        'complaint_type' => ['id' => $complaint->complaintType['id'] , 'type' => $complaint->complaintType['type']],
+        'complaint_department' => ['id' => $complaint->complaintDepartment['id'] , 'department_name' => $complaint->complaintDepartment['department_name']],
+        'location' => $complaint['location'],
+        'problem_description' => $complaint['problem_description'],
+        'complaint_status' => ['id' => $complaint->complaintStatus['id'] , 'status' => $complaint->complaintStatus['status']],
+        'attachments' => $attachments
+    ];
+
+        $message = 'complaint details for spicific employee departmemt are retrived succesfully';
+        return ['complaint' => $complaint_det , 'message' => $message];
+}
 
         // edit complaint status
 public function editComplaintStatus($request , $complaintId): array{
@@ -82,21 +85,21 @@ public function editComplaintStatus($request , $complaintId): array{
 }
 
         // add notes about complaint
-        public function addNotesAboutComplaint($request , $complaintId): array{
-            $user = Auth::user();
-            $employeeId = Employee::where('user_id' , $user->id)->value('id');
+public function addNotesAboutComplaint($request , $complaintId): array{
+$user = Auth::user();
+$employeeId = Employee::where('user_id' , $user->id)->value('id');
 
-            $request->validate(['note' => 'required']);
+$request->validate(['note' => 'required']);
 
-            $note = Note::create([
-                'note' => $request['note'],
-                'complaint_id' => $complaintId,
-                'employee_id' => $employeeId
-            ]);
+$note = Note::create([
+    'note' => $request['note'],
+    'complaint_id' => $complaintId,
+    'employee_id' => $employeeId
+]);
 
-            $message = 'note for complaint are added succesfully';
-             return ['note' => $note , 'message' => $message];
-        }
+$message = 'note for complaint are added succesfully';
+    return ['note' => $note , 'message' => $message];
+}
 
 
 
@@ -105,7 +108,7 @@ public function editComplaintStatus($request , $complaintId): array{
 
 //////////////////////////////////////////////////////Admin
 
-public function getComplaintDepartment():array{
+public function viewComplaintDepartment():array{
         return $this->getComplaintDepartment();
 }
 
@@ -141,6 +144,13 @@ $employee = User::factory()->create([
     'photo' => url(Storage::url($request['photo'])),
     'is_verified' => true
 ]);
+$employee->save();
+
+$employeeDep = Employee::create([
+ 'user_id' => $employee->id,
+ 'complaint_department_id' => $request['complaint_department_id'],
+ 'name' => $request['name']
+]);
 
 $message = 'Employee added succesfully';
 return ['employee' => $employee , 'message' => $message];
@@ -148,60 +158,47 @@ return ['employee' => $employee , 'message' => $message];
 
 
 public function getAllEmployees():array{
-    $employees = User::where('role_id' , 3)-> get();
-    foreach ($employees as $employee) {
-            $emp [] = ['id' => $employee->id  ,
-            'employee_name' => $employee->name,
-            'gender' => $employee->gender['name'],
-            'phone' => $employee->phone,
-            'city' =>  $employee->city['name'],
-            'age' => $employee->age,
-            'email' =>$employee->email,
-    ];
 
-}
+    $employeeRole = Role::where('name', 'Employee')->value('id');
+    $employees = User::whereIn('role_id', [$employeeRole])
+        ->select('name', 'email', 'phone' , 'age')
+        ->get();
 $message = 'all employees are retrived successfully';
 
-return ['employees' =>  $emp , 'message' => $message];
+return ['employees' =>  $employees , 'message' => $message];
 }
+
 
 public function deleteEmployee($id): array
 {
-    $user = User::findOrFail($id);
+    $user = User::find($id);
     $user->delete();
-
     return [
         'message' => 'Employee deleted successfully'
     ];
 }
 
 public function getAllUsers():array{
-    $users = User::where('role_id' , 2)-> get();
-    foreach ($users as $user) {
-            $clients [] = ['id' => $user->id  ,
-            'employee_name' => $user->name,
-            'gender' => $user->gender['name'],
-            'phone' => $user->phone,
-            'city' =>  $user->city['name'],
-            'age' => $user->age,
-            'email' =>$user->email,
-    ];
 
-}
-$message = 'all user are retrived successfully';
+    $userRole = Role::where('name', 'Client')->value('id');
+    $users = User::whereIn('role_id', [$userRole])
+        ->select('name', 'email', 'phone' , 'age')
+        ->get();
+$message = 'all users are retrived successfully';
 
-return ['user' =>  $clients , 'message' => $message];
+return ['users' =>  $users , 'message' => $message];
 }
 
 public function deleteUser($id): array
 {
-    $user = User::findOrFail($id);
+    $user = User::find($id);
     $user->delete();
-
     return [
         'message' => 'User deleted successfully'
     ];
 }
+
+
 
 public function lastNewUsers(): array
 {
@@ -233,7 +230,7 @@ public function getUserCountsByRoleByYear(int $year): array
     $data = [
         'client'     => $clientCount,
         'employee'     => $employeeCount,
-        'total'      => $clientCount + $leaderCount ,
+        'total'      => $clientCount + $employeeCount ,
     ];
 
     $message = "User counts by role for year {$year} retrieved successfully";
@@ -251,7 +248,7 @@ public function totalComplaintByYear(int $year): array
     $endOfYear = Carbon::createFromDate($year, 12, 31)->endOfDay();
 
     $complaints = Complaint::whereBetween('created_at', [$startOfYear, $endOfYear])
-                    ->sum('amount');
+                    ->count();
 
     return [
         'complaints' => $complaints,
@@ -259,15 +256,18 @@ public function totalComplaintByYear(int $year): array
     ];
 }
 
+
+
 public function generateAndStorePdf () {
+
     $complaints = Complaint::all();
 
     $pdf = Pdf::view('pdf.complaints' , ['complaints' => $complaints ]);
     $fileName = 'complaints_' . now()->format('Y_m_d_H_i') . '.pdf';
 
     Storage::put("public/pdfs/$fileName" , $pdf->content());
-    
     return "storage/pdfs/$fileName";
+
 }
 
 

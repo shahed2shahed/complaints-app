@@ -4,16 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Complaint extends Model
+class CopmlaintVersion extends Model
 {
-    protected $fillable = [
+        protected $fillable = [
         'complaint_type_id',
         'user_id',
         'complaint_department_id',
         'complaint_status_id',
         'problem_description',
-        'location'
+        'location',
+        'complaint_id'
     ];
+
+
 
     public function complaintType(){
         return $this->belongsTo(ComplaintType::class, 'complaint_type_id');
@@ -42,9 +45,9 @@ class Complaint extends Model
     public function additionalInfos() {
         return $this->hasMany(AdditionalInfo::class);
     }
-
-        public function complaintِVersions(){
-        return $this->hasMany(CopmlaintVersion::class);
+    
+    public function complaint(){
+        return $this->belongsTo(Complaint::class, 'complaint_id');
     }
 
 }

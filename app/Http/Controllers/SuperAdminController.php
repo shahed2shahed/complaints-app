@@ -8,10 +8,13 @@ use App\Http\Responses\response;
 use App\Services\ComplaintWebService;
 use App\Http\Requests\Complaint\EditComplaintStatusRequest;
 use App\Http\Requests\Complaint\AdditionalInfoRequest;
+use App\Http\Requests\Super\AddNewEmployeeRequest;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
 
 
 class SuperAdminController extends Controller
@@ -22,10 +25,10 @@ class SuperAdminController extends Controller
         $this->complaintWebService = $complaintWebService;
     }
 
-public function getComplaintDepartment(): JsonResponse {
+public function viewComplaintDepartment(): JsonResponse {
     $data = [];
     try {
-        $data = $this->complaintWebService->getComplaintDepartment();
+        $data = $this->complaintWebService->viewComplaintDepartment();
         return Response::Success($data, $data['message']);
     } catch (Throwable $th) {
         $message = $th->getMessage();
@@ -105,6 +108,48 @@ public function deleteUser( $id): JsonResponse {
         return Response::Error($data, $message, $errors);
     }
 }
+
+public function lastNewUsers(): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->complaintWebService->lastNewUsers();
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
+
+public function getUserCountsByRoleByYear($year): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->complaintWebService->getUserCountsByRoleByYear($year);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
+
+public function totalComplaintByYear($year): JsonResponse {
+    $data = [];
+    try {
+        $data = $this->complaintWebService->totalComplaintByYear($year);
+        return Response::Success($data, $data['message']);
+    } catch (Throwable $th) {
+        $message = $th->getMessage();
+        $errors[] = $message;
+        return Response::Error($data, $message, $errors);
+    }
+}
+
+
+
+
+
+
 
 
 public function generateAndStorePdf (){

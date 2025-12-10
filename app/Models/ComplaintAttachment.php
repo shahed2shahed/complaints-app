@@ -13,6 +13,12 @@ class ComplaintAttachment extends Model
 
     public function complaint(){
         return $this->belongsTo(Complaint::class, 'complaint_id');
-        
+
+    }
+
+
+    public function complaintVersion(){
+        return $this->belongsTo(CopmlaintVersion::class, 'complaint_version_id');
+
     }
 }

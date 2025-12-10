@@ -13,4 +13,10 @@ class ComplaintStatus extends Model
     public function complaints(){
         return $this->hasMany(Complaint::class);
     }
+
+           public function complaintVersions(){
+        return $this->hasMany(CopmlaintVersion::class);
+
+    }
+
 }

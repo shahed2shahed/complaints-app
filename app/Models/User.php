@@ -71,6 +71,12 @@ use HasApiTokens, HasFactory, Notifiable , HasRoles;
         return $this->hasMany(Complaint::class);
     }
 
+           public function complaintVersions(){
+        return $this->hasMany(ComplaintVersion::class);
+
+    }
+
+
 
        public function city()
     {

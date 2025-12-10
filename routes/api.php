@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\ComplaintsWebController;
+use App\Http\Controllers\SuperAdminController;
 
 
 /*
@@ -18,9 +19,9 @@ use App\Http\Controllers\ComplaintsWebController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::controller(AuthController::class)->group(function(){
     Route::post('register' , 'register')
@@ -52,14 +53,17 @@ Route::middleware('auth:sanctum')->get('logout', [AuthController::class, 'logout
 
 
 
-Route::controller(ComplaintsController::class)->group(function () {
+// Route::controller(ComplaintsController::class)->group(function () {
 
-    Route::get('getComplaintDepartment' , 'getComplaintDepartment')
-    ->name('all.getComplaintDepartment');
+//     Route::get('getComplaintDepartment' , 'getComplaintDepartment')
+//     ->name('getComplaintDepartment');
 
-    Route::get('getComplaintType' , 'getComplaintType')
-    ->name('all.getComplaintType');
-});
+//     Route::get('getComplaintType' , 'getComplaintType')
+//     ->name('all.getComplaintType')
+//
+//
+// ;
+// });
 
 
 
@@ -108,47 +112,44 @@ Route::middleware('auth:sanctum')->controller(ComplaintsWebController::class)->g
     ->name('employee.request.additional.info.about.complaint')
     ->middleware('can:requestAdditionalInfo');
 
-
-
+});
 
 
     Route::controller(SuperAdminController::class)->group(function () {
+    Route::get('viewComplaintDepartment' , 'viewComplaintDepartment')
+    ->name('admin.viewComplaintDepartment');
 
-    Route::get('getComplaintDepartment' , 'getComplaintDepartment')
-    ->name('all.getComplaintDepartment');
-
-    Route::get('viewComplaintsByDepartmemt' , 'viewComplaintsByDepartmemt')
-    ->name('all.viewComplaintsByDepartmemt');
+    Route::get('viewComplaintsByDepartmemt/{id}' , 'viewComplaintsByDepartmemt')
+    ->name('admin.viewComplaintsByDepartmemt');
 
   Route::post('addNewEmployee' , 'addNewEmployee')
-    ->name('all.addNewEmployee');
+    ->name('admin.addNewEmployee');
 
   Route::get('getAllEmployees' , 'getAllEmployees')
-    ->name('all.getAllEmployees');
+    ->name('admin.getAllEmployees');
 
   Route::get('deleteEmployee/{id}' , 'deleteEmployee')
-    ->name('all.deleteEmployee');
+    ->name('admin.deleteEmployee');
 
   Route::get('getAllUsers' , 'getAllUsers')
-    ->name('all.getAllUsers');
+    ->name('admin.getAllUsers');
 
   Route::get('deleteUser/{id}' , 'deleteUser')
-    ->name('all.deleteUser');
+    ->name('admin.deleteUser');
+
+ Route::get('lastNewUsers' , 'lastNewUsers')
+    ->name('admin.lastNewUsers');
+
+ Route::get('getUserCountsByRoleByYear/{year}' , 'getUserCountsByRoleByYear')
+    ->name('admin.getUserCountsByRoleByYear');
+
+Route::get('totalComplaintByYear/{year}' , 'totalComplaintByYear')
+->name('admin.totalComplaintByYear');
+
 
   Route::get('generateAndStorePdf' , 'generateAndStorePdf')
-    ->name('all.generateAndStorePdf');
-
-
-
+    ->name('admin.generateAndStorePdf');
 
 
 });
 
-
-
-
-
-
-
-
-});

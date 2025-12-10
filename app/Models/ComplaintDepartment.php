@@ -15,6 +15,11 @@ class ComplaintDepartment extends Model
         return $this->hasMany(Complaintِ::class);
     }
 
+        public function complaintVersions(){
+        return $this->hasMany(CopmlaintVersion::class);
+
+    }
+
     public function employees(){
         return $this->hasMany(Employee::class);
     }

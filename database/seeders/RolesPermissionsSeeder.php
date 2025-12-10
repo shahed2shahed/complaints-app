@@ -28,7 +28,8 @@ class RolesPermissionsSeeder extends Seeder
                         'userForgotPassword' , 'userCheckCode' , 'userResetPassword',
                         'logout' , 'addComplaint' , 'viewMyComplaints' , 'viewComplaintDetails' ,
                         'viewComplaintsEmployeeDepartmemt' , 'viewComplaintDetailsEmployeeDepartmemt' , 'editComplaintStatus' ,
-                        'addNotesAboutComplaint' , 'requestAdditionalInfo'];
+                        'addNotesAboutComplaint' , 'requestAdditionalInfo , getComplaintDepartment'
+              ,'requestAdditionalInfo'    , 'viewComplaintsByDepartmemt' ];
 
         foreach ($permissions as $permissionName) {
             Permission::findOrCreate($permissionName, 'web');

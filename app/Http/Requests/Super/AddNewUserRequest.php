@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Http\Responses\response;
 
-class AddNewEmployeeRequest extends FormRequest
+class AddNewUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,7 +34,6 @@ class AddNewEmployeeRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
             //'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'complaint_department_id' =>'required'
         ];
     }
 
