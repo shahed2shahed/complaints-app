@@ -53,12 +53,13 @@ public function viewComplaintDetailsEmployeeDepartmemt($complaintId): array{
     $complaint =  Complaint::with('complaintType' , 'complaintDepartment' , 'complaintStatus' , 'complaintAttachments')->find($complaintId);
     $attachments = [] ;
 
+    if ($complaint->complaintAttachments != null){
         foreach ($complaint->complaintAttachments as $complaintAttachment) {
             $attachments [] = [
                 'id' => $complaintAttachment->id ,
                     'attachment' => url(Storage::url($complaintAttachment->attachment))
                 ];
-            }
+            }}
 
     $complaint_det = [
         'complaint_type' => ['id' => $complaint->complaintType['id'] , 'type' => $complaint->complaintType['type']],
